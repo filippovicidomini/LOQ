@@ -10,9 +10,8 @@ E la sua intensità massima, e quella totale?"""
 # e r(z) è la distanza dal centro del fascio in funzione della distanza z dal fuoco
 
 
-import numpy as np
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 # Definisco le costanti
 w0 = 10e-6
@@ -20,7 +19,7 @@ z = 3e-3
 lam = 632.8e-9
 k = 2 * np.pi / lam
 zR = np.pi * w0 ** 2 / lam
-r = np.sqrt(x**2 + y**2)
+r = np.sqrt(x ** 2 + y ** 2)
 
 
 # Definisco le funzioni
@@ -31,13 +30,15 @@ def w(z):
 def R(z):
     return z * (1 + (zR / z) ** 2)
 
-def phi(z): # Gouy phase shift
+
+def phi(z):  # Gouy phase shift
     return np.arctan(z / zR)
 
 
-def fascio_gaussiano(z, theta):
-    return w0 / w(z) * np.exp(-1j * phi(z)) * np.exp(-1j * k * r**2 / (2 * R(z)**2) * np.exp(
+def fascio_gaussiano(z):
+    return w0 / w(z) * np.exp(-1j * phi(z)) * np.exp(-1j * k * r ** 2 / (2 * R(z) ** 2) * np.exp(
         -r ** 2 / w(z) ** 2))
+
 
 # voglio vedere con dei colori il fascio gaussiano in funzione della direzione di propagazione theta
 # quindi theta è una variabile che va da -pi/2 a pi/2
@@ -50,7 +51,7 @@ z = np.linspace(0, z, 1000)
 z, theta = np.meshgrid(z, theta)
 
 # calcolo il fascio gaussiano
-fascio = fascio_gaussiano(z, theta)
+fascio = fascio_gaussiano(z)
 
 # disegno il fascio gaussiano
 plt.figure()
@@ -60,4 +61,3 @@ plt.ylabel('theta [rad]', fontsize=12, fontweight='bold', color='red', labelpad=
 plt.colorbar(label='fascio gaussiano', orientation='vertical', pad=0.1, fraction=0.05)
 plt.tight_layout()
 plt.show()
-
