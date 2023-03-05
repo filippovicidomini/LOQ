@@ -19,7 +19,12 @@ z = 3e-3
 lam = 632.8e-9
 k = 2 * np.pi / lam
 zR = np.pi * w0 ** 2 / lam
-r = np.sqrt(x ** 2 + y ** 2)
+E0 = 10
+
+x = np.linspace(-10, 10, 1000)
+y = np.linspace(-10, 10, 1000)
+x, y = np.meshgrid(x, y)
+
 
 
 # Definisco le funzioni
@@ -34,30 +39,11 @@ def R(z):
 def phi(z):  # Gouy phase shift
     return np.arctan(z / zR)
 
+def r(x, y):
+    return np.sqrt(x ** 2 + y ** 2)
 
-def fascio_gaussiano(z):
-    return w0 / w(z) * np.exp(-1j * phi(z)) * np.exp(-1j * k * r ** 2 / (2 * R(z) ** 2) * np.exp(
-        -r ** 2 / w(z) ** 2))
+z = np.linspace(0, 3e-3, 1000)
 
-
-# voglio vedere con dei colori il fascio gaussiano in funzione della direzione di propagazione theta
-# quindi theta è una variabile che va da -pi/2 a pi/2
-# e z è una variabile che va da 0 a 3 mm
-
-theta = np.linspace(-np.pi / 2, np.pi / 2, 1000)
-z = np.linspace(0, z, 1000)
-
-# creo una matrice di z e theta
-z, theta = np.meshgrid(z, theta)
-
-# calcolo il fascio gaussiano
-fascio = fascio_gaussiano(z)
-
-# disegno il fascio gaussiano
-plt.figure()
-plt.pcolormesh(z, theta, np.abs(fascio), shading='auto', cmap='magma')
-plt.xlabel('z [m]', fontsize=12, fontweight='bold', color='red', labelpad=10, rotation=0)
-plt.ylabel('theta [rad]', fontsize=12, fontweight='bold', color='red', labelpad=10, rotation=90)
-plt.colorbar(label='fascio gaussiano', orientation='vertical', pad=0.1, fraction=0.05)
-plt.tight_layout()
-plt.show()
+def fascio_gaussiano(z, x, y):
+    return w0 / w(z) * np.exp(-1j * phi(z)) * np.exp(-1j * k * r(x, y) ** 2 / (2 * R(z))) * np.exp(
+        -r(x, y) ** 2 / w(z) ** 2) * np.exp(-1j * k * z) * E0
